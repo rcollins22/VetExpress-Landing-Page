@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Phone, Mail, Clock, MapPin, Send, MessageCircle, Calendar } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    petName: '',
-    petType: '',
+    pet_name: '',
+    pet_type: '',
     breed: '',
     address: '',
-    lastVetVisit: '',
-    preferredDate: '',
-    preferredTime: '',
+    last_visit: '',
+    pref_date: '',
+    pref_time: '',
     urgency: '',
     message: ''
   });
+
+  const form = useRef<HTMLFormElement>(null);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -24,11 +28,26 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission here
+
+    if (!form.current) return;
+
+    emailjs
+      .sendForm('service_i6vbevy', 'YOUR_TEMPLATE_ID', form.current, {
+        publicKey: 'YOUR_PUBLIC_KEY',
+      })
+      .then(
+        () => {
+          console.log('SUCCESS!');
+          alert('Thank you for your message. We\'ll contact you shortly!');
+        },
+        (error) => {
+          console.error('FAILED...', error.text);
+        }
+      );
+
     console.log('Form submitted:', formData);
-    alert('Thank you for your message. We\'ll contact you shortly!');
   };
 
   return (
@@ -48,7 +67,7 @@ const Contact = () => {
           <div className="space-y-8">
             <div>
               <h3 className="text-2xl font-bold text-[#232323] mb-6">Get in Touch</h3>
-              
+
               {/* Emergency Contact */}
               <div className="bg-red-50 border border-red-200 p-6 rounded-xl mb-6">
                 <div className="flex items-center space-x-3 mb-2">
@@ -113,14 +132,14 @@ const Contact = () => {
             <div className="space-y-4">
               <h4 className="font-semibold text-[#232323]">Quick Actions</h4>
               <div className="flex flex-col sm:flex-row gap-3">
-                <a 
+                <a
                   href="tel:+14706103033"
                   className="bg-[#24CBC2] hover:bg-[#1BAFA8] text-white px-6 py-3 rounded-full font-semibold transition-colors flex items-center justify-center space-x-2 flex-1"
                 >
                   <Phone className="h-4 w-4" />
                   <span>Call Now</span>
                 </a>
-                <a 
+                <a
                   href="sms:+14706103033"
                   className="bg-[#8FC993] hover:bg-green-600 text-white px-6 py-3 rounded-full font-semibold transition-colors flex items-center justify-center space-x-2 flex-1"
                 >
@@ -138,197 +157,197 @@ const Contact = () => {
               <h3 className="text-2xl font-bold text-[#232323]">Schedule a Visit</h3>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-  {/* Name & Phone */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div>
-      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Your Name *</label>
-      <input
-        type="text"
-        id="name"
-        name="name"
-        required
-        value={formData.name}
-        onChange={handleChange}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-        placeholder="Pet Lover"
-      />
-    </div>
-    <div>
-      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
-      <input
-        type="tel"
-        id="phone"
-        name="phone"
-        required
-        value={formData.phone}
-        onChange={handleChange}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-        placeholder="(281) 330-8004"
-      />
-    </div>
-  </div>
+            <form ref={form} onSubmit={handleSubmit} className="space-y-6">
+              {/* Name & Phone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">Your Name *</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                    placeholder="Pet Lover"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                    placeholder="(281) 330-8004"
+                  />
+                </div>
+              </div>
 
-  {/* Email */}
-  <div>
-    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
-    <input
-      type="email"
-      id="email"
-      name="email"
-      required
-      value={formData.email}
-      onChange={handleChange}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-      placeholder="puppyfever@example.com"
-    />
-  </div>
+              {/* Email */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                  placeholder="puppyfever@example.com"
+                />
+              </div>
 
-  {/* Pet Name & Type */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div>
-      <label htmlFor="petName" className="block text-sm font-medium text-gray-700 mb-2">Pet's Name</label>
-      <input
-        type="text"
-        id="petName"
-        name="petName"
-        value={formData.petName}
-        onChange={handleChange}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-        placeholder="Bella"
-      />
-    </div>
-    <div>
-      <label htmlFor="petType" className="block text-sm font-medium text-gray-700 mb-2">Pet Type</label>
-      <select
-        id="petType"
-        name="petType"
-        value={formData.petType}
-        onChange={handleChange}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-      >
-        <option value="">Select</option>
-        <option value="dog">Dog</option>
-        <option value="cat">Cat</option>
-      </select>
-    </div>
-  </div>
+              {/* Pet Name & Type */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="petName" className="block text-sm font-medium text-gray-700 mb-2">Pet's Name</label>
+                  <input
+                    type="text"
+                    id="pet_name"
+                    name="pet_name"
+                    value={formData.pet_name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                    placeholder="Bella"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="petType" className="block text-sm font-medium text-gray-700 mb-2">Pet Type</label>
+                  <select
+                    id="pet_type"
+                    name="pet_type"
+                    value={formData.pet_type}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                  >
+                    <option value="">Select</option>
+                    <option value="dog">Dog</option>
+                    <option value="cat">Cat</option>
+                  </select>
+                </div>
+              </div>
 
-  {/* Conditional Breed (Full Width) */}
-  {formData.petType === 'dog' && (
-    <div>
-      <label htmlFor="breed" className="block text-sm font-medium text-gray-700 mb-2">Dog's Breed</label>
-      <input
-        type="text"
-        id="breed"
-        name="breed"
-        value={formData.breed}
-        onChange={handleChange}
-        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-        placeholder="e.g., Golden Retriever"
-      />
-    </div>
-  )}
+              {/* Conditional Breed (Full Width) */}
+              {formData.pet_type === 'dog' && (
+                <div>
+                  <label htmlFor="breed" className="block text-sm font-medium text-gray-700 mb-2">Dog's Breed</label>
+                  <input
+                    type="text"
+                    id="breed"
+                    name="breed"
+                    value={formData.breed}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                    placeholder="e.g., Golden Retriever"
+                  />
+                </div>
+              )}
 
-  {/* Address */}
-  <div>
-    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">Address Where Visit Is Needed *</label>
-    <input
-      type="text"
-      id="address"
-      name="address"
-      required
-      value={formData.address}
-      onChange={handleChange}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-      placeholder="123 Pet Lane, Atlanta, GA"
-    />
-  </div>
+              {/* Address */}
+              <div>
+                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">Address Where Visit Is Needed *</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  required
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                  placeholder="123 Pet Lane, Atlanta, GA"
+                />
+              </div>
 
-  {/* Last Vet Visit */}
-  <div>
-    <label htmlFor="lastVetVisit" className="block text-sm font-medium text-gray-700 mb-2">When Was Your Pet’s Last Vet Visit?</label>
-    <input
-      type="text"
-      id="lastVetVisit"
-      name="lastVetVisit"
-      value={formData.lastVetVisit}
-      onChange={handleChange}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-      placeholder="e.g., 3 months ago, 1 year ago, never"
-    />
-  </div>
+              {/* Last Vet Visit */}
+              <div>
+                <label htmlFor="lastVetVisit" className="block text-sm font-medium text-gray-700 mb-2">When Was Your Pet’s Last Vet Visit?</label>
+                <input
+                  type="text"
+                  id="last_visit"
+                  name="last_visit"
+                  value={formData.last_visit}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                  placeholder="e.g., 3 months ago, 1 year ago, never"
+                />
+              </div>
 
-  {/* Preferred Time */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-  <div>
-    <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label>
-    <input
-      type="date"
-      id="preferredDate"
-      name="preferredDate"
-      value={formData.preferredDate}
-      onChange={handleChange}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-    />
-  </div>
-  <div>
-    <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-2">Preferred Time</label>
-    <input
-      type="time"
-      id="preferredTime"
-      name="preferredTime"
-      value={formData.preferredTime}
-      onChange={handleChange}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-    />
-  </div>
-</div>
+              {/* Preferred Time */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label>
+                  <input
+                    type="date"
+                    id="pref_date"
+                    name="pref_date"
+                    value={formData.pref_date}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-700 mb-2">Preferred Time</label>
+                  <input
+                    type="time"
+                    id="pref_time"
+                    name="pref_time"
+                    value={formData.pref_time}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                  />
+                </div>
+              </div>
 
-  {/* Urgency */}
-  <div>
-    <label htmlFor="urgency" className="block text-sm font-medium text-gray-700 mb-2">Urgency Level *</label>
-    <select
-      id="urgency"
-      name="urgency"
-      required
-      value={formData.urgency}
-      onChange={handleChange}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
-    >
-      <option value="">Select urgency level</option>
-      <option value="urgent">Within 24 hours</option>
-      <option value="routine">Next few days</option>
-    </select>
-  </div>
+              {/* Urgency */}
+              <div>
+                <label htmlFor="urgency" className="block text-sm font-medium text-gray-700 mb-2">Urgency Level *</label>
+                <select
+                  id="urgency"
+                  name="urgency"
+                  required
+                  value={formData.urgency}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2]"
+                >
+                  <option value="">Select urgency level</option>
+                  <option value="urgent">Within 24 hours</option>
+                  <option value="routine">Next few days</option>
+                </select>
+              </div>
 
-  {/* Additional Info */}
-  <div>
-    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Additional Info or Concerns</label>
-    <textarea
-      id="message"
-      name="message"
-      rows={4}
-      value={formData.message}
-      onChange={handleChange}
-      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2] resize-none"
-      placeholder="Describe your pet’s condition, behavior changes, medications, etc."
-    ></textarea>
-  </div>
+              {/* Additional Info */}
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Additional Info or Concerns</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows={4}
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#24CBC2] resize-none"
+                  placeholder="Describe your pet’s condition, behavior changes, medications, etc."
+                ></textarea>
+              </div>
 
-  {/* Submit */}
-  <button
-    type="submit"
-    className="w-full bg-[#24CBC2] hover:bg-[#1BAFA8] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center space-x-3 transform hover:scale-105"
-  >
-    <Send className="h-5 w-5" />
-    <span>Schedule Visit</span>
-  </button>
+              {/* Submit */}
+              <button
+                type="submit"
+                className="w-full bg-[#24CBC2] hover:bg-[#1BAFA8] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors flex items-center justify-center space-x-3 transform hover:scale-105"
+              >
+                <Send className="h-5 w-5" />
+                <span>Schedule Visit</span>
+              </button>
 
-  <p className="text-sm text-gray-500 text-center">
-    For emergencies, please call: <strong>(470) 610-3033</strong>
-  </p>
-</form>
+              <p className="text-sm text-gray-500 text-center">
+                For emergencies, please call: <strong>(470) 610-3033</strong>
+              </p>
+            </form>
 
           </div>
         </div>
